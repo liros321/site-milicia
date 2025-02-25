@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Produção - Milícia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #222;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #333;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            color: #FF4500;
+        }
+        main {
+            padding: 20px;
+            flex: 1;
+        }
+        h2, h3 {
+            color: #FF4500;
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+        input[type="number"] {
+            padding: 8px;
+            width: 50px;
+            background: #444;
+            border: 1px solid #555;
+            color: #fff;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #FF4500;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #e63e00;
+        }
+        #resultado {
+            margin-top: 20px;
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #444;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #333;
+            color: #888;
+        }
+        footer p {
+            margin: 0;
+        }
+        .tabela-precos {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            background: #333;
+        }
+        .tabela-precos th, .tabela-precos td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #444;
+        }
+        .tabela-precos th {
+            background: #444;
+        }
+        .tabela-precos td {
+            color: #fff;
+        }
+        .resultado-venda {
+            margin-top: 20px;
+            background: #444;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+    <script>
+        const precos = {
+            'AK-47': { padrao: 150000, parceria: 130000 },
+            'PDW': { padrao: 110000, parceria: 100000 },
+            'UZI': { padrao: 85000, parceria: 80000 },
+            'Five-Seven': { padrao: 45000, parceria: 40000 },
+            '7.62': { padrao: 500, parceria: 400 },
+            '.380': { padrao: 450, parceria: 350 }
+        };
+
+        function calcularMateriais() {
+            const armas = {
+                'AK-47': { ferro: 5, ferrolho: 1, cano: 1, mola: 1, gatilho: 1 },
+                'PDW': { ferro: 3, ferrolho: 1, cano: 1, mola: 1, gatilho: 1 },
+                'UZI': { ferro: 2, ferrolho: 1, cano: 1, mola: 1, gatilho: 1 },
+                'Five-Seven': { ferro: 1, ferrolho: 1, cano: 1, mola: 1, gatilho: 1 }
+            };
+
+            const municoes = {
+                '7.62': { cobre: 3, prata: 3, polvora: 3, unidades: 48 },
+                '.380': { cobre: 2, prata: 2, polvora: 2, unidades: 48 }
+            };
+
+            let resultado = "<h2>Materiais Necessários:</h2>";
+            let totalMateriais = {};
+
+            document.querySelectorAll('.item').forEach(input => {
+                let tipo = input.dataset.tipo;
+                let nome = input.dataset.nome;
+                let quantidade = parseInt(input.value) || 0;
+                
+                if (quantidade > 0) {
+                    let materiais = tipo === 'arma' ? armas[nome] : municoes[nome];
+                    resultado += `<h3>${quantidade}x ${nome}</h3><ul>`;
+                    
+                    for (let material in materiais) {
+                        if (material !== 'unidades') {
+                            let total = materiais[material] * quantidade;
+                            if (tipo === 'municao' && materiais.unidades) {
+                                total /= materiais.unidades;
+                            }
+                            resultado += `<li>${total}x ${material}</li>`;
+                            totalMateriais[material] = (totalMateriais[material] || 0) + total;
+                        }
+                    }
+                    resultado += "</ul>";
+                }
+            });
+
+            resultado += "<h2>Total Geral:</h2><ul>";
+            for (let material in totalMateriais) {
+                resultado += `<li>${totalMateriais[material]}x ${material}</li>`;
+            }
+            resultado += "</ul>";
+            
+            document.getElementById('resultado').innerHTML = resultado;
+        }
+
+        function calcularVenda() {
+            let vendaTotal = 0;
+
+            document.querySelectorAll('.item').forEach(input => {
+                let tipo = input.dataset.tipo;
+                let nome = input.dataset.nome;
+                let quantidade = parseInt(input.value) || 0;
+                let preco = document.querySelector('input[name="parceria"]:checked') ? precos[nome].parceria : precos[nome].padrao;
+
+                if (quantidade > 0) {
+                    if (tipo === 'arma' || tipo === 'municao') {
+                        let valorTotal = preco * quantidade;
+                        vendaTotal += valorTotal;
+                    }
+                }
+            });
+
+            document.getElementById('resultado-venda').innerHTML = `<h3>Valor Total de Venda: ${vendaTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h3>`;
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Calculadora de Produção - Milícia</h1>
+    </header>
+    <main>
+        <h2>Insira a quantidade desejada:</h2>
+        <div>
+            <h3>Armas</h3>
+            <label>AK-47: <input type="number" class="item" data-tipo="arma" data-nome="AK-47"></label>
+            <label>PDW: <input type="number" class="item" data-tipo="arma" data-nome="PDW"></label>
+            <label>UZI: <input type="number" class="item" data-tipo="arma" data-nome="UZI"></label>
+            <label>Five-Seven: <input type="number" class="item" data-tipo="arma" data-nome="Five-Seven"></label>
+        </div>
+        <div>
+            <h3>Munições</h3>
+            <label>7.62: <input type="number" class="item" data-tipo="municao" data-nome="7.62"></label>
+            <label>.380: <input type="number" class="item" data-tipo="municao" data-nome=".380"></label>
+        </div>
+        <h3>Escolha o tipo de venda:</h3>
+        <label><input type="radio" name="parceria" value="padrao" checked> Preço Padrão</label>
+        <label><input type="radio" name="parceria" value="parceria"> Preço Parceria</label>
+        <button onclick="calcularMateriais()">Calcular Materiais</button>
+        <button onclick="calcularVenda()">Calcular Venda</button>
+        <div id="resultado"></div>
+        <div id="resultado-venda" class="resultado-venda"></div>
+
+        <h2>Valores de Venda</h2>
+        <table class="tabela-precos">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Preço Padrão</th>
+                    <th>Preço para Parceria</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>AK-47</td>
+                    <td>150k</td>
+                    <td>130k</td>
+                </tr>
+                <tr>
+                    <td>PDW</td>
+                    <td>110k</td>
+                    <td>100k</td>
+                </tr>
+                <tr>
+                    <td>UZI</td>
+                    <td>85k</td>
+                    <td>80k</td>
+                </tr>
+                <tr>
+                    <td>Five-Seven</td>
+                    <td>45k</td>
+                    <td>40k</td>
+                </tr>
+                <tr>
+                    <td>Munição 7.62</td>
+                    <td>500 por munição</td>
+                    <td>400 por munição</td>
+                </tr>
+                <tr>
+                    <td>Munição .380</td>
+                    <td>450 por munição</td>
+                    <td>350 por munição</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <p>&copy; 2025 Milícia. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
