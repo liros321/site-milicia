@@ -216,7 +216,7 @@
       document.querySelectorAll(".item").forEach(input => {
         let nome = input.dataset.nome;
         let quantidade = parseInt(input.value) || 0;
-        let fator = (nome === "7.62" || nome === ".380") ? Math.ceil(quantidade / 48) : quantidade;
+        let fator = (nome === "7.62" || nome === ".380") ? Math.ceil(quantidade / 84) : quantidade;
 
         if (quantidade > 0) {
           totalVenda += quantidade * precos[nome][tipoPreco];
