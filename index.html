@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tropa do Japão</title>
   <style>
     body {
@@ -51,14 +51,29 @@
       width: 100%;
     }
 
+    .form-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      width: 100%;
+      max-width: 1220px;
+    }
+
     .section {
       background: rgba(0, 0, 0, 0.85);
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 20px;
-      width: 90%;
+      width: 100%;
       max-width: 600px;
       text-align: center;
+      box-sizing: border-box;
+    }
+
+    .porcentagem {
+      max-width: 300px;
+      flex: 1;
     }
 
     .section h2 {
@@ -148,39 +163,41 @@
     <h1>Tropa do Japão</h1>
   </header>
   <main>
-    <div class="section">
-      <h2>Dados do Comprador</h2>
-      <label>Nome: <input type="text" id="nomeComprador" placeholder="Ex: João Bala" required></label>
-      <label>RG: <input type="text" id="rgComprador" placeholder="Somente números" maxlength="11" oninput="this.value = this.value.replace(/\\D/g, '')" required></label>
-      <label>Telefone: <input type="text" id="telComprador" placeholder="123-456" maxlength="7" oninput="mascararTelefone(this)" required></label>
-      <label>Discord: <input type="text" id="discordComprador" placeholder="Ex: bala123" required></label>
+    <div class="form-wrapper">
+      <div class="section">
+        <h2>Dados do Comprador</h2>
+        <label>Nome: <input type="text" id="nomeComprador" placeholder="Ex: João Bala" required></label>
+        <label>RG: <input type="text" id="rgComprador" placeholder="Somente números" maxlength="11" oninput="this.value = this.value.replace(/\\D/g, '')" required></label>
+        <label>Telefone: <input type="text" id="telComprador" placeholder="123-456" maxlength="7" oninput="mascararTelefone(this)" required></label>
+        <label>Discord: <input type="text" id="discordComprador" placeholder="Ex: bala123" required></label>
 
-      <h2>Armas</h2>
-      <label>AK-47 <input type="number" class="item" data-tipo="arma" data-nome="AK-47"></label>
-      <label>PDW <input type="number" class="item" data-tipo="arma" data-nome="PDW"></label>
-      <label>UZI <input type="number" class="item" data-tipo="arma" data-nome="UZI"></label>
-      <label>Five-Seven <input type="number" class="item" data-tipo="arma" data-nome="Five-Seven"></label>
-      <h3>Munições</h3>
-      <label>7.62 <input type="number" class="item" data-tipo="municao" data-nome="7.62"></label>
-      <label>.380 <input type="number" class="item" data-tipo="municao" data-nome=".380"></label>
+        <h2>Armas</h2>
+        <label>AK-47 <input type="number" class="item" data-tipo="arma" data-nome="AK-47"></label>
+        <label>PDW <input type="number" class="item" data-tipo="arma" data-nome="PDW"></label>
+        <label>UZI <input type="number" class="item" data-tipo="arma" data-nome="UZI"></label>
+        <label>Five-Seven <input type="number" class="item" data-tipo="arma" data-nome="Five-Seven"></label>
+        <h3>Munições</h3>
+        <label>7.62 <input type="number" class="item" data-tipo="municao" data-nome="7.62"></label>
+        <label>.380 <input type="number" class="item" data-tipo="municao" data-nome=".380"></label>
 
-      <div class="price-btns">
-        <button class="price-btn selected" onclick="selecionarPreco(this, 'padrao')">Preço Padrão</button>
-        <button class="price-btn" onclick="selecionarPreco(this, 'parceria')">Preço Parceria</button>
+        <div class="price-btns">
+          <button class="price-btn selected" onclick="selecionarPreco(this, 'padrao')">Preço Padrão</button>
+          <button class="price-btn" onclick="selecionarPreco(this, 'parceria')">Preço Parceria</button>
+        </div>
+
+        <button class="btn" onclick="calcular()">Calcular</button>
+        <button class="btn" onclick="encomendar()">🛒 ENCOMENDAR</button>
+
+        <div id="resultado" class="result-box"></div>
       </div>
 
-      <button class="btn" onclick="calcular()">Calcular</button>
-      <button class="btn" onclick="encomendar()">🛒 ENCOMENDAR</button>
-
-      <div id="resultado" class="result-box"></div>
-    </div>
-
-    <div class="section">
-      <h2>Calculadora de Porcentagem</h2>
-      <label>Valor Total: <input type="number" id="valorTotal" placeholder="Ex: 10000"></label>
-      <label>Porcentagem (%): <input type="number" id="porcentagem" placeholder="Ex: 30"></label>
-      <button class="btn" onclick="calcularPorcentagem()">Calcular Porcentagem</button>
-      <div id="resultadoPorcentagem" class="result-box"></div>
+      <div class="section porcentagem">
+        <h2>Calculadora de Porcentagem</h2>
+        <label>Valor Total: <input type="number" id="valorTotal" placeholder="Ex: 10000"></label>
+        <label>Porcentagem (%): <input type="number" id="porcentagem" placeholder="Ex: 30"></label>
+        <button class="btn" onclick="calcularPorcentagem()">Calcular Porcentagem</button>
+        <div id="resultadoPorcentagem" class="result-box"></div>
+      </div>
     </div>
   </main>
 
